@@ -12,8 +12,6 @@ var APPS = [
 var MINIFY = (process.env.MOOC_MINIFY === '1');
 var LOCALIZE = (process.env.MOOC_LOCALIZE === '1');
 
-var DIST_BROWSERIFIED = (MINIFY ? 'uglify:browserified' : 'copy:browserified');
-
 var LOCALES = (LOCALIZE ? [
   'af_za',
   'ar_sa',
@@ -201,7 +199,7 @@ APPS.forEach(function(app) {
   LOCALES.forEach(function(locale) {
     var relname = locale + '/' + app + '.js';
     var src = 'build/browserified/' + relname;
-    var dest = 'build/package/js/' + relname;
+    var dest = 'build/package/js/' + relname + '.min';
     uglifiedFiles[dest] = [src];
   });
 });
@@ -214,7 +212,7 @@ config.uglify = {
 config.watch = {
   js: {
     files: ['src/**/*.js'],
-    tasks: ['copy:src', 'browserify', DIST_BROWSERIFIED]
+    tasks: ['copy:src', 'browserify', 'uglify:browserified', 'copy:browserified']
   },
   style: {
     files: ['style/**/*.scss', 'style/**/*.sass'],
@@ -230,11 +228,11 @@ config.watch = {
   },
   ejs: {
     files: ['src/**/*.ejs'],
-    tasks: ['ejs', 'browserify', DIST_BROWSERIFIED]
+    tasks: ['ejs', 'browserify', 'uglify:browserified', 'copy:browserified']
   },
   messages: {
     files: ['i18n/**/*.json'],
-    tasks: ['pseudoloc', 'messages', 'browserify', DIST_BROWSERIFIED]
+    tasks: ['pseudoloc', 'messages', 'browserify', 'uglify:browserified', 'copy:browserified']
   },
   dist: {
     files: ['build/package/**/*'],
@@ -298,7 +296,8 @@ module.exports = function(grunt) {
     'copy:src',
     'ejs',
     'browserify',
-    DIST_BROWSERIFIED,
+    'uglify:browserified',
+    'copy:browserified',
     'copy:static',
     'concat',
     'sass'

@@ -73,6 +73,9 @@ BlocklyApps.init = function(config) {
   if (!config) {
     config = {};
   }
+
+  BlocklyApps.share = config.share;
+
   // Store configuration.
   onAttempt = config.onAttempt || function(report) {
     console.log('Attempt!');
@@ -92,6 +95,20 @@ BlocklyApps.init = function(config) {
   var resetButton = container.querySelector('#resetButton');
   runButton.addEventListener('click', BlocklyApps.runButtonClick);
   resetButton.addEventListener('click', BlocklyApps.resetButtonClick);
+
+  if (config.hide_source) {
+    var blockly = container.querySelector('#blockly');
+    blockly.style.display = 'none';
+    var buttonRow = runButton.parentElement;
+    var openWorkspace = document.createElement('button');
+    openWorkspace.appendChild(document.createTextNode(msg.openWorkspace()));
+    dom.addClickTouchEvent(openWorkspace, function() {
+      // Redirect user to /edit version of this page. It would be better to
+      // just turn on the workspace but there are rendering issues with that.
+      window.location.href = window.location.href + '/edit';
+    });
+    buttonRow.appendChild(openWorkspace);
+  }
 
   // Record time at initialization.
   BlocklyApps.initTime = new Date().getTime();
@@ -590,8 +607,10 @@ BlocklyApps.report = function(options) {
   report.lines = feedback.getNumBlocksUsed();
 
   // Disable the run button until onReportComplete is called.
-  document.getElementById('runButton').setAttribute('disabled', 'disabled');
-  onAttempt(report);
+  if (!BlocklyApps.share) {
+    document.getElementById('runButton').setAttribute('disabled', 'disabled');
+    onAttempt(report);
+  }
 };
 
 /**

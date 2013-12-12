@@ -2,4 +2,4 @@
 
 set -e
 
-MOOC_MINIFY=1 MOOC_LOCALIZE=1 grunt rebuild
+MOOC_LOCALIZE=1 grunt rebuild
