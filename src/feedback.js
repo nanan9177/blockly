@@ -10,8 +10,8 @@ exports.displayFeedback = function(options) {
   options.numTrophies = numTrophiesEarned(options);
 
   var feedback = document.createElement('div');
-  var feedbackImage = createFeedbackImage(options);
   var feedbackMessage = getFeedbackMessage(options);
+  var sharingDiv = createSharingDiv(options);
   var showCode = getShowCodeElement(options);
   var feedbackBlocks = new FeedbackBlocks(options);
 
@@ -25,8 +25,8 @@ exports.displayFeedback = function(options) {
   if (feedbackBlocks.div) {
     feedback.appendChild(feedbackBlocks.div);
   }
-  if (feedbackImage) {
-    feedback.appendChild(feedbackImage);
+  if (sharingDiv) {
+    feedback.appendChild(sharingDiv);
   }
   if (showCode) {
     feedback.appendChild(showCode);
@@ -200,6 +200,39 @@ var getFeedbackMessage = function(options) {
   }
   dom.setText(feedback, message);
   return feedback;
+};
+
+var createSharingDiv = function(options) {
+  var sharingDiv = document.createElement('div');
+  sharingDiv.setAttribute('style', 'display:inline-block');
+  var sharingImage = document.createElement('div');
+  var sharingUrl = document.createElement('div');
+  var sharingButtons = document.createElement('div');
+
+  var feedbackImage = createFeedbackImage(options);
+  if (feedbackImage) {
+    sharingImage.appendChild(feedbackImage);
+    sharingDiv.appendChild(sharingImage);
+  }
+
+  sharingUrl.innerHTML = require('./templates/buttons.html')({
+    data: {
+      sharingUrl: options.response.level_source
+    }
+  });
+  sharingDiv.appendChild(sharingUrl);
+
+  sharingButtons.innerHTML = require('./templates/buttons.html')({
+    data: {
+      facebookUrl: "https://www.facebook.com/sharer/sharer.php?u=" +
+          options.response.level_source,
+      twitterUrl: "https://twitter.com/intent/tweet?url=" +
+          options.response.level_source
+    }
+  });
+  sharingDiv.appendChild(sharingButtons);
+
+  return sharingDiv;
 };
 
 var createFeedbackImage = function(options) {

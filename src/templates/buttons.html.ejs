@@ -25,3 +25,20 @@
     <%= msg.continue() %>
   </button>
 <% }; -%>
+
+<% if (data.facebookUrl) { -%>
+  <a href=<%= data.facebookUrl %> target="_blank" class="feeback-links">
+    <img src=<%= BlocklyApps.assetUrl("media/facebook_purple.png") %> >
+  </a>
+<% }; -%>
+
+<% if (data.twitterUrl) { -%>
+  <a href=<%= data.twitterUrl %> target="_blank" class="feeback-links">
+    <img src=<%= BlocklyApps.assetUrl("media/twitter_purple.png") %> >
+  </a>
+  <br>
+<% }; -%>
+
+<% if (data.sharingUrl) { -%>
+  <input type="text" name="sharing-url" value=<%= data.sharingUrl %> class="feeback-links">
+<% }; -%>
